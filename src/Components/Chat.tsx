@@ -9,7 +9,7 @@ function Chat() {
     const [curr, setCurr] = useState<string>("");
 
     useEffect(() => {
-        const newSocket = io('http://localhost:3002');
+        const newSocket = io('https://chatback-production-e1bf.up.railway.app');
         setSocket(newSocket);
 
         newSocket.on('reply', (data) => {
