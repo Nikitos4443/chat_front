@@ -1,0 +1,35 @@
+.messageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 20px;
+    font-size: 26px;
+    gap: 20px;
+    height: 85%;
+    overflow: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: #c2f5a2 #f0f0f0;
+}
+
+.message {
+    border: 1px solid lawngreen;
+    border-radius: 5px;
+    background-color: #a0fb26;
+    max-width: 40%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 1px 2px 1px 2px;
+}
+
+.ownMessage {
+    align-self: flex-end;
+    margin-right: 10px;
+    background-color: #c2f5a2;
+}
+
+.otherMessage {
+    align-self: flex-start;
+    margin-left: 10px;
+    background-color: #a0fb26;
+}
