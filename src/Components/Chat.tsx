@@ -12,7 +12,7 @@ function Chat() {
     const {roomId, clientName} = useParams();
 
     useEffect(() => {
-        const newSocket = io('http://localhost:3002');
+        const newSocket = io('chatback-production-e1bf.up.railway.app');
         setSocket(newSocket);
 
         newSocket.emit('join-room', {clientName, roomId});
