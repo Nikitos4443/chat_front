@@ -2,19 +2,41 @@ import React, {useEffect, useState} from 'react';
 import styles from './Chat.module.css'
 import Messages from "./Messages.tsx";
 import {io, Socket} from "socket.io-client";
+import {useParams} from "react-router-dom";
 
 function Chat() {
     const [socket, setSocket] = useState<Socket>();
-    const [messages, setMessages] = useState<{ text: string, isOwnMessage: boolean }[]>([]);
+    const [messages, setMessages] = useState<{ client: string, text: string, isOwnMessage: boolean }[]>([]);
     const [curr, setCurr] = useState<string>("");
+    const [joined, setJoined] = useState<string>("");
+    const {roomId, clientName} = useParams();
 
     useEffect(() => {
         const newSocket = io('http://localhost:3002');
         setSocket(newSocket);
 
+        newSocket.emit('join-room', {clientName, roomId});
+
+        newSocket.on('user-joined', data => {
+            setJoined(data);
+        })
+
+        const handleBeforeUnload = () => {
+            if (newSocket) {
+                newSocket.emit('user-left', { clientName, roomId });
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        newSocket.on('user-leave', data => {
+            console.log(data)
+            setJoined(data);
+        })
+
         newSocket.on('reply', (data) => {
             console.log('Отримано відповідь:', data);
-            setMessages((prevMessages) => [...prevMessages, { text: data, isOwnMessage: false },]);
+            setMessages((prevMessages) => [...prevMessages, { client: data.client, text: data.message, isOwnMessage: false },]);
             setCurr("");
         });
 
@@ -23,17 +45,25 @@ function Chat() {
         };
     }, []);
 
+    useEffect(() => {
+        setTimeout(() => {
+            setJoined("");
+        }, 3000)
+    }, [joined]);
+
     const onMessageSend = () => {
         if (socket && curr) {
-            socket.emit('newMessage', curr);
-            setMessages((prevMessages) => [...prevMessages, { text: curr, isOwnMessage: true }]);
+            socket.emit('send-message', {clientName: clientName, message: curr, roomId: roomId});
+            setMessages((prevMessages) => [...prevMessages, { client: 'me', text: curr, isOwnMessage: true }]);
             setCurr('');
         }
     };
 
+
     return (
         <div className={styles.mainContainer}>
             <div className={styles.starter}>This is my chat app</div>
+            {joined && <span>{joined}</span>}
             <Messages messages={messages} />
             <div className={styles.inputContainer}>
                 <input

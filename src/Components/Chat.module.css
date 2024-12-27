@@ -45,8 +45,8 @@
     width: 10%;
     background: lawngreen;
     cursor: pointer;
-    border-bottom-right-radius: 7px;
-    border:none;
+    border-bottom-left-radius: 7px !important;
+    border: none;
 }
 
 .button:active {

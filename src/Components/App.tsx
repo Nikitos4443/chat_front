@@ -1,14 +1,17 @@
-import { useState } from 'react'
 import './App.css'
 import Chat from "./Chat.tsx";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Main from "./Main.tsx";
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <Chat/>
-    </>
+      <BrowserRouter>
+          <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="/room/:roomId/:clientName" element={<Chat />} />
+          </Routes>
+      </BrowserRouter>
   )
 }
 
